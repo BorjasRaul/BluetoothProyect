@@ -19,6 +19,7 @@ import kotlin.collections.ArrayList
 
 val MY_UUID:UUID= UUID.fromString("3e6994d2-91b8-11eb-a8b3-0242ac130003")
 class MainActivity : AppCompatActivity() {
+    lateinit var firstnameDevice: String
     private val REQUEST_CODE_ENABLE_BT: Int = 1
     private val REQUEST_CODE_DISCOVERABLE_BT: Int = 2
     lateinit var bthAdapter: BluetoothAdapter
@@ -50,7 +51,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             mbinding.bthIV.setImageResource(R.drawable.ic_bluetooth_off)
         }
-
+        firstnameDevice = bthAdapter!!.name
+        val nameDev = "BAZ_" + firstnameDevice
+        bthAdapter!!.setName(nameDev)
+        Log.i("NAMEDEVICE BAZ" , bthAdapter.name)
         mbinding.bthON.setOnClickListener {
             if (bthAdapter.isEnabled) {
                 Toast.makeText(this, "already on", Toast.LENGTH_LONG).show()
@@ -120,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 val address: String = device.name
                 Log.i("NAME", address)
 
-                val intent = Intent(this, BluetoothServerController::class.java)
+              //  val intent = Intent(this, BluetoothServerController::class.java)
                 intent.putExtra(EXTRA_NAME, address)
                 startActivity(intent)
             }
@@ -162,14 +166,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class BluetoothServerController(activity: MainActivity) : Thread() {
-
-
+    override fun onDestroy() {
+        super.onDestroy()
+        bthAdapter.setName(firstnameDevice)
+        Log.i("NAME DEVICE set", bthAdapter.name)
+        Log.i("NAME DEVICE var",firstnameDevice)
     }
-
-
-
-
 }
 
 
